@@ -1,5 +1,11 @@
 'use strict';
 
+// Helper Functions
+
+function getIngredients(){}
+function getPairings(){}
+
+// Server Initialization
 const hapi = require('@hapi/hapi');
 
 const init = async () => {
