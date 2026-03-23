@@ -32,9 +32,11 @@ services:
   database:
     # The database does database things fr fr
     image: mongo:latest
+    restart: always
     container_name: gastroDB
     volumes:
       - dbData:/data/db
+      - ./initDB.js:/docker-entrypoint-initdb.d/init.js:ro 
     # makes port accessible to the front-end
     expose:
       - "27017"
