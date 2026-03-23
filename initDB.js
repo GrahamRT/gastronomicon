@@ -13,7 +13,8 @@ db.ingredients.insertMany([
       'autumn'
     ],
     weight: 'medium',
-    volume: 'quiet-moderate'
+    volume: 'quiet-moderate',
+    pairings: []
   },
   {
     name: 'apricots',
@@ -24,7 +25,8 @@ db.ingredients.insertMany([
       'summer'
     ],
     weight: 'medium',
-    volume: 'moderate'
+    volume: 'moderate',
+    pairings: []
   },
 
 ])
