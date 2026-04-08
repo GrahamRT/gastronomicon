@@ -1,9 +1,18 @@
-<script>
+<script lang="ts">
 import { Plus } from 'lucide-svelte';
+import { searchData } from '$lib/stores';
+  
+  function handleSubmit(e: SubmitEvent) {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    const ingredient = formData.get('ingredient-search') as string;
+    searchData.update(data => [...data, ingredient]);
+    (e.target as HTMLFormElement).reset();
+  }
 </script>
 
 <search>
-  <form action="" method="get">
+  <form on:submit={handleSubmit} method="get">
     <input type="search" name="ingredient-search" id="ingredient-search" placeholder="Add ingredient...">
     <button id="ingredient-submit" type="submit"><Plus color="#bbb" size={36}/></button>
   </form>
