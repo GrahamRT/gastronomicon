@@ -1,12 +1,14 @@
 <script lang="ts">
 import { Plus } from 'lucide-svelte';
 import { searchData } from '$lib/stores';
+import { get } from 'svelte/store';
   
   function handleSubmit(e: SubmitEvent) {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
     const ingredient = formData.get('ingredient-search') as string;
     searchData.update(data => [...data, ingredient]);
+    console.log(get(searchData));
     (e.target as HTMLFormElement).reset();
   }
 </script>
