@@ -9,8 +9,8 @@ async function getIngredients(request, h){
   let select = "select i.name, i.description, v.name as volume, w.name as weight from ingredients as i join volume v on v.id = i.volume_id join weight w on w.id = i.weight_id where i.name = $1";
   try {
     const result = await request.pg.client.query(select, [ingredientName]);
-    console.log(result);
-    return h.response({ingredients: result.rows })
+    console.log(`Retrieved ${ingredientName}\n`);
+    return h.response(result.rows[0])
     .type('text/json');
   } catch(err) {
     console.log(err);
@@ -21,8 +21,8 @@ async function getPairings(request, h){
   let select = "select a.name as ingredientA, b.name as ingredientB from pairings join ingredients a on pairings.ingredientA = a.id join ingredients b on pairings.ingredientB = b.id where a.name = $1 OR b.name = $1";
   try {
     const result = await request.pg.client.query(select, [ingredientName]);
-    console.log(result);
-    return h.response({pairings: result.rows})
+    console.log(`Retrieved pairings with ${ingredientName}\n`);
+    return h.response(result.rows)
     .type('text/json');
   } catch(err) {
     console.log(err);
@@ -36,6 +36,12 @@ const init = async () => {
   const server = hapi.server({
     host: "0.0.0.0",
     port: 3000,
+    routes: {
+      cors: {
+        origin: ['*'],
+        credentials: true
+      }
+    }
   });
   await server.register({
     plugin: HapiPostgresConnection,
