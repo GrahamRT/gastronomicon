@@ -4,27 +4,41 @@ const HapiPostgresConnection = require('hapi-postgres-connection');
 
 // Helper Functions
 
-async function getIngredients(request, h){
+async function getIngredients(request, h) {
   let ingredientName = request.query.name;
   let select = "select i.name, i.description, v.name as volume, w.name as weight from ingredients as i join volume v on v.id = i.volume_id join weight w on w.id = i.weight_id where i.name = $1";
   try {
     const result = await request.pg.client.query(select, [ingredientName]);
     console.log(`Retrieved ${ingredientName}\n`);
-    return h.response(result.rows[0])
-    .type('text/json');
-  } catch(err) {
+    console.log("response:", result.rows)
+    return h.response(result.rows)
+      .type('text/json');
+  } catch (err) {
     console.log(err);
   }
 }
-async function getPairings(request, h){
+async function getPairings(request, h) {
   let ingredientName = request.query.name;
   let select = "select a.name as source, b.name as target from pairings join ingredients a on pairings.ingredientA = a.id join ingredients b on pairings.ingredientB = b.id where a.name = $1 OR b.name = $1";
   try {
+    getAllIngredients(request);
     const result = await request.pg.client.query(select, [ingredientName]);
     console.log(`Retrieved pairings with ${ingredientName}\n`);
+    console.log("response:", result.rows)
     return h.response(result.rows)
-    .type('text/json');
-  } catch(err) {
+      .type('text/json');
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function getAllIngredients(request) {
+  let select = "select i.name, i.description, v.name as volume, w.name as weight from ingredients as i join volume v on v.id = i.volume_id join weight w on w.id = i.weight_id";
+  try {
+    const result = await request.pg.client.query(select);
+    console.log(`Retrieved all ingredients\n`);
+    console.log("response:", result.rows)
+  } catch (err) {
     console.log(err);
   }
 }
@@ -59,9 +73,9 @@ const init = async () => {
           const result = await request.pg.client.query('SELECT NOW()');
           console.log('✓ Database connection successful:', result.rows[0]);
           return h.response(result.rows[0]);
-        } catch(err) {
+        } catch (err) {
           console.error('✗ Database connection failed:', err.message);
-          return h.response({ errorMessage: err.message});
+          return h.response({ errorMessage: err.message });
         }
       }
     },
@@ -80,8 +94,8 @@ const init = async () => {
 };
 
 process.on('unhandledRejection', (err) => {
-    console.log(err);
-    process.exit(1);
+  console.log(err);
+  process.exit(1);
 });
 
 init();
